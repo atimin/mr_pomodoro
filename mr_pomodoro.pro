@@ -15,3 +15,5 @@ include(deployment.pri)
 
 HEADERS += \
     pomodoro.h
+
+VERSION = 0.0.1
