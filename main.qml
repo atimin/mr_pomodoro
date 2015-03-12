@@ -17,7 +17,7 @@ import QtQuick.Dialogs 1.2
 import net.flipback.qmlcomponents 1.0
 
 ApplicationWindow {
-    title: qsTr("Mr Promodoro")
+    title: qsTr("Mr. Promodoro")
     width: 320
     height: 340
     visible: true
