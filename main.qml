@@ -17,7 +17,7 @@ import QtQuick.Dialogs 1.2
 import net.flipback.qmlcomponents 1.0
 
 ApplicationWindow {
-    title: qsTr("Mr. Promodoro")
+    title: qsTr("Mr. Pomodoro")
     width: 320
     height: 340
     visible: true
@@ -39,7 +39,6 @@ ApplicationWindow {
         transformOrigin: Item.Center
         font.pixelSize: 50
     }
-
 
     Button {
         id: btStart
