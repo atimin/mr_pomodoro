@@ -17,24 +17,49 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
 
-    time = 25*60;
+    idle = new QState();
+    focus = new QState();
+    pause = new QState();
+
+    idle->addTransition(this, SIGNAL(started()), focus);
+    focus->addTransition(this, SIGNAL(started()), pause);
+    focus->addTransition(this, SIGNAL(stopped()), idle);
+    pause->addTransition(this, SIGNAL(stopped()), idle);
+
+    connect(focus, SIGNAL(exited()), this, SLOT(focusEnded()));
+    connect(pause, SIGNAL(exited()), this, SLOT(pauseEnded()));
+
+    machine.addState(idle);
+    machine.addState(focus);
+    machine.addState(pause);
+    machine.setInitialState(idle);
+
+    machine.start();
+    
+    time = 25*PM_MINUTE;
 }
 
 Pomodoro::~Pomodoro()
 {
     timer->stop();
     delete(timer);
+    delete(idle);
+    delete(focus);
+    delete(pause);
 }
 
 void Pomodoro::start()
 {
-    time = 25*60;
     timer->start(1000);
+
+    started();
 }
 
 void Pomodoro::stop()
 {
     timer->stop();
+
+    stopped();
 }
 
 
@@ -52,4 +77,14 @@ void Pomodoro::timerTick()
     if (time-- == 0) {
         stop();
     }
+}
+
+void Pomodoro::focusEnded()
+{
+    time = 5*PM_MINUTE;
+}
+
+void Pomodoro::pauseEnded()
+{
+    time = 25*PM_MINUTE;
 }

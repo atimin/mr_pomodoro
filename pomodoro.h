@@ -16,6 +16,10 @@
 #include <QObject>
 #include <QTimer>
 #include <QString>
+#include <QState>
+#include <QStateMachine>
+
+#define PM_MINUTE 1
 
 class Pomodoro : public QObject
 {
@@ -24,6 +28,10 @@ class Pomodoro : public QObject
     QTimer *timer;
 
     Q_PROPERTY(QString time READ getTime)
+    QStateMachine machine;
+    QState *idle;
+    QState *focus;
+    QState *pause;
 public:
     explicit Pomodoro(QObject *parent = 0);
     ~Pomodoro();
@@ -36,9 +44,13 @@ protected:
 
 signals:
     void tick();
+    void started();
+    void stopped();
 
-public slots:
+private slots:
     void timerTick();
+    void focusEnded();
+    void pauseEnded();
 
 };
 
