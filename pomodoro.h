@@ -19,7 +19,11 @@
 #include <QState>
 #include <QStateMachine>
 
+#ifdef QT_DEBUG
 #define PM_MINUTE 1
+#else
+#define PM_MINUTE 60
+#endif
 
 class Pomodoro : public QObject
 {
