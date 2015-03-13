@@ -17,6 +17,7 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
 
+    /* Initialilse the state machine */
     idle = new QState();
     focus = new QState();
     pause = new QState();
@@ -73,6 +74,7 @@ QString Pomodoro::getTime()
 
 void Pomodoro::timerTick()
 {
+    /* Handle a tick of the timer */
     tick();
     if (time-- == 0) {
         stop();
