@@ -28,25 +28,27 @@
 class Pomodoro : public QObject
 {
     Q_OBJECT
-    int time;
+    int time;       // Time in seconds
     QTimer *timer;
 
 
     Q_PROPERTY(QString time READ getTime)
-
-    /* States of the timer */
+    Q_PROPERTY(QString state READ getState)  /* States of the timer */
     QStateMachine machine;
-    QState *idle;               // timer does nothing
-    QState *focus;              // focus's time
-    QState *pause;              // pause's time
+    QState *idle;               // Timer does nothing
+    QState *focus;              // Focus's time
+    QState *pause;              // Pause's time
+    QString state;              // Name of the current state
 
-    QString getTime();
 public:
     explicit Pomodoro(QObject *parent = 0);
     ~Pomodoro();
 
     Q_INVOKABLE void start();   // Start time of focus \ pause
     Q_INVOKABLE void stop();    // Stop the timer
+
+    QString getTime();
+    QString getState();
 protected:
 
 signals:

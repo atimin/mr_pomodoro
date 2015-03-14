@@ -16,6 +16,7 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
+    state = "Idle";
 
     /* Initialilse the state machine */
     idle = new QState();
@@ -26,6 +27,8 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
     focus->addTransition(this, SIGNAL(started()), pause);
     focus->addTransition(this, SIGNAL(stopped()), idle);
     pause->addTransition(this, SIGNAL(stopped()), idle);
+
+    idle->assignProperty(this, "state", "Idle");
 
     connect(focus, SIGNAL(exited()), this, SLOT(focusEnded()));
     connect(pause, SIGNAL(exited()), this, SLOT(pauseEnded()));
@@ -63,7 +66,7 @@ void Pomodoro::stop()
     stopped();
 }
 
-
+/* Accessors */
 QString Pomodoro::getTime()
 {
     div_t d_time = div(time, 60);
@@ -72,6 +75,12 @@ QString Pomodoro::getTime()
     return min + ":" + sec;
 }
 
+QString Pomodoro::getState()
+{
+    return state;
+}
+
+/* Slots */
 void Pomodoro::timerTick()
 {
     /* Handle a tick of the timer */
