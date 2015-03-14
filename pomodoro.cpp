@@ -40,7 +40,8 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
 
     machine.start();
     
-    time = 25*PM_MINUTE;
+    focusInterval = 25;
+    pauseInterval = 5;
 }
 
 Pomodoro::~Pomodoro()
@@ -80,6 +81,26 @@ QString Pomodoro::getState()
     return state;
 }
 
+int Pomodoro::getFocusInterval()
+{
+    return focusInterval;
+}
+
+void Pomodoro::setFocusInterval(int interval)
+{
+    focusInterval = interval;
+}
+
+int Pomodoro::getPauseInterval()
+{
+    return pauseInterval;
+}
+
+void Pomodoro::setPauseInterval(int interval)
+{
+    pauseInterval = interval;
+}
+
 /* Slots */
 void Pomodoro::timerTick()
 {
@@ -92,10 +113,10 @@ void Pomodoro::timerTick()
 
 void Pomodoro::focusEnded()
 {
-    time = 5*PM_MINUTE;
+    time = pauseInterval * PM_MINUTE;
 }
 
 void Pomodoro::pauseEnded()
 {
-    time = 25*PM_MINUTE;
+    time = focusInterval * PM_MINUTE;
 }

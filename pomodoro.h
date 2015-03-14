@@ -28,12 +28,13 @@
 class Pomodoro : public QObject
 {
     Q_OBJECT
-    int time;       // Time in seconds
+    int time;                   // Time in seconds
     QTimer *timer;
+    int focusInterval;
+    int pauseInterval;
 
-
-    Q_PROPERTY(QString time READ getTime)
-    Q_PROPERTY(QString state READ getState)  /* States of the timer */
+    Q_PROPERTY(QString time READ getTime)       // The rest of time for current state in second
+    Q_PROPERTY(QString state READ getState)     // States of the timer
     QStateMachine machine;
     QState *idle;               // Timer does nothing
     QState *focus;              // Focus's time
@@ -47,8 +48,16 @@ public:
     Q_INVOKABLE void start();   // Start time of focus \ pause
     Q_INVOKABLE void stop();    // Stop the timer
 
-    QString getTime();
-    QString getState();
+    QString getTime();          // Get the rest time of the current state
+    QString getState();         // Get current state
+
+    /* Get\set intervals in minutes */
+    int getFocusInterval();
+    void setFocusInterval(int interval);
+
+    int getPauseInterval();
+    void setPauseInterval(int interval);
+
 protected:
 
 signals:
