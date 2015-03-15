@@ -15,11 +15,16 @@ public:
 private:
     void checkIdle(Pomodoro *pom);
 private Q_SLOTS:
+    /* Test IDLE state */
     void testidle();
     void testIdleAfterFocus();
     void testIdleAfterPause();
+
+    /* Test FOCUS state */
+    void testFocus();
 };
 
+/* Test IDLE state */
 UPomodoro::UPomodoro()
 {
     pom = new Pomodoro(this);
@@ -52,10 +57,20 @@ void UPomodoro::testIdleAfterPause()
     checkIdle(pom);
 }
 
+/* Test FOCUS state */
+void UPomodoro::testFocus()
+{
+    pom->setFocusInterval(1);
+    checkIdle(pom);
+    pom->start();
+
+    QCOMPARE(pom->getState(), Pomodoro::FOCUS);
+}
+
 /* Helpers */
 void UPomodoro::checkIdle(Pomodoro *pom)
 {
-    QCOMPARE(pom->getState(), QString("Idle"));
+    QCOMPARE(pom->getState(), Pomodoro::IDLE);
 }
 
 QTEST_MAIN(UPomodoro)

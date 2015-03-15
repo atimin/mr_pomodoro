@@ -25,6 +25,8 @@ ApplicationWindow {
     Pomodoro {
         id: pomodoro
         onTick: txTime.text = pomodoro.time
+        onStarted: { txState.text = pomodoro.stateName; }
+        onStopped: { txState.text = pomodoro.stateName; }
     }
 
     Text {
@@ -58,5 +60,13 @@ ApplicationWindow {
         height: 101
         text: qsTr("Stop")
         onClicked: { pomodoro.stop() }
+    }
+
+    Text {
+        id: txState
+        x: 33
+        y: 199
+        text: qsTr("Text")
+        font.pixelSize: 12
     }
 }

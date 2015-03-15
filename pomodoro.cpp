@@ -16,7 +16,7 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(timerTick()));
-    state = "Idle";
+    state = IDLE;
 
     /* Initialilse the state machine */
     idle = new QState();
@@ -28,10 +28,13 @@ Pomodoro::Pomodoro(QObject *parent) : QObject(parent)
     focus->addTransition(this, SIGNAL(stopped()), idle);
     pause->addTransition(this, SIGNAL(stopped()), idle);
 
-    idle->assignProperty(this, "state", "Idle");
+    idle->assignProperty(this, "state", IDLE);
+    focus->assignProperty(this, "state", FOCUS);
 
     connect(focus, SIGNAL(exited()), this, SLOT(focusEnded()));
+    connect(focus, SIGNAL(exited()), this, SLOT(focusStarted()));
     connect(pause, SIGNAL(exited()), this, SLOT(pauseEnded()));
+    connect(pause, SIGNAL(exited()), this, SLOT(pauseStarted()));
 
     machine.addState(idle);
     machine.addState(focus);
@@ -76,9 +79,30 @@ QString Pomodoro::getTime()
     return min + ":" + sec;
 }
 
-QString Pomodoro::getState()
+Pomodoro::States Pomodoro::getState()
 {
     return state;
+}
+
+void Pomodoro::setState(Pomodoro::States state)
+{
+    this->state = state;
+}
+
+QString Pomodoro::getStateName()
+{
+    QString stateName;
+
+    switch (getState()){
+    case IDLE:  stateName = "Idle";
+        break;
+    case FOCUS: stateName = "Focus";
+        break;
+    case PAUSE: stateName = "Pause";
+        break;
+    }
+
+    return stateName;
 }
 
 int Pomodoro::getFocusInterval()
@@ -107,16 +131,29 @@ void Pomodoro::timerTick()
     /* Handle a tick of the timer */
     tick();
     if (time-- == 0) {
-        stop();
+        timer->stop();
+        //qDebug() << "Time is up.";
     }
+}
+
+void Pomodoro::focusStarted()
+{
+    //qDebug() << "Focus started.";
 }
 
 void Pomodoro::focusEnded()
 {
     time = pauseInterval * PM_MINUTE;
+    //qDebug() << "Focus ended.";
+}
+
+void Pomodoro::pauseStarted()
+{
+    //qDebug() << "Pause started.";
 }
 
 void Pomodoro::pauseEnded()
 {
     time = focusInterval * PM_MINUTE;
+    //qDebug() << "Pause ended.";
 }
